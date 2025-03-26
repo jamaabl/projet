@@ -1,0 +1,111 @@
+/* Style global */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Conteneur principal */
+.container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+/* Titres */
+h2, h3 {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Champ de saisie */
+input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* Boutons */
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+/* Bouton principal */
+#invite-btn {
+    background: #032c43;
+    color: #fff;
+}
+
+#invite-btn:hover {
+    background: #032c43;
+}
+
+/* Bouton d'inscription */
+#signup-btn {
+    background: #032c43;
+    color: #fff;
+}
+
+#signup-btn:hover {
+    background: #081116;
+}
+/*Bouton de retour vers la page principale*/
+.back-button {
+    display: block;
+    background-color: #032c43;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 94%;
+    margin-top: 9px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    transition: 0.3s ease-in-out;
+}
+
+.back-button:hover {
+    background-color: #032c43;
+}
+
+/* Messages */
+.success {
+    color: #123749;
+    font-weight: 600;
+}
+
+.warning {
+    color: rgb(37, 40, 108);
+    font-weight: 600;
+}
+
+.error {
+    color: red;
+    font-weight: 600;
+}
+
+/* Formulaire d'inscription */
+#signup-form {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f1f1f1;
+    border-radius: 8px;
+}

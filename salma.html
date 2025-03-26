@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartes Interactives</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css cartecentral.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background-color:#fff;;
+    }
+    .kanban-header {
+    background-color: #a6c4e8;
+    color: white;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#project-name {
+    font-size: 25px;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+    .modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #f4f4f4;
+      padding: 30px;
+      box-shadow: 0px 0px 10px #aaa;
+      width: 50%;
+      height: 600px;
+      z-index: 1000;
+     
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+
+    #card-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .card {
+      width: 200px;
+      height: 300px;
+      background-color:#90b6d5; 
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      background: #fff;
+      color: rgb(15, 10, 10);
+      border: none;
+      padding: 5px 8px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    .card-title {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    .card-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 10px 0;
+      width: 100%;
+      flex-grow: 1;
+      overflow-y: auto;
+      max-height: 200px;
+    }
+
+    .card-list li {
+      background-color: #fff;
+      padding: 8px;
+      margin: 5px;
+      border-radius: 5px;
+      text-align: left;
+      cursor: pointer;
+
+      user-select:none;
+      -moz-user-select:none;
+      -webkit-user-select: none;
+    }
+
+    .card-list li.dragging{
+      opacity:0.5;
+    }
+
+    .card-add-element {
+      position: absolute;
+      bottom: 15px;
+      width: 90%;
+      display: flex;
+      gap: 5px;
+    }
+
+    .card-input {
+      flex-grow: 1;
+      padding: 3px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 10px;
+    }
+
+    .card-add-button {
+      background-color: rgba(0, 0, 0, 0.2);
+      color: black;
+      border: none;
+      padding: 4px 4px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .card-add-button:hover {
+      background-color: #c4d7e7;
+    }
+
+    .card.expanded {
+      width: 300px;
+      height: 400px;
+      z-index: 1;
+    }
+
+    #add-card-container-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .add-card-container {
+      width: 250px;
+      height: 150px;
+      background: #90b6d5;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    #cardNameInput {
+      padding: 8px;
+      width: 90%;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .kanban-header {
+           
+            background-color: #90b6d5;
+            color: white;
+            
+        }
+
+        #project-name {
+            font-size: 25px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+     
+
+
+    #add-card-btn {
+      background-color: rgba(0, 0, 0, 0.2);
+      color: black;
+      border: none;
+      padding: 10px;
+      width: 90%;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #add-card-btn:hover {
+      background-color: #c4d7e7;
+    }
+
+    
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    .close {
+      cursor: pointer;
+      font-size: 18px;
+      color: black;
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      border: none;
+    }
+
+    .left-container { 
+      width: 65%;
+      padding-right: 5px;
+      text-align: left;
+      
+    }
+.btn-success {
+  background-color: #aaa;
+  border-color:#aaa ;
+
+}
+    .checklist-container {
+      margin-top: auto;
+    }
+
+    .delete-btn {
+      background-color: rgba(0, 0, 0, 0.2);
+      color: black;
+      padding: 3px 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      border-radius: 5px;
+      margin-left: auto;
+    }
+
+    .delete-btn:hover {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .checklist-title {
+      background: rgb(232, 230, 230);
+      display: flex;
+      align-items: center;
+    }
+
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 50px;
+      padding-right: 350px;
+     
+    }
+
+    .add-task-container {
+      padding: 6px 6px;
+      width: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .progress-bar {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      height: 5px;
+      margin-top: 10px;
+    }
+
+    .progress-bar-inner {
+      height: 100%;
+      background-color:#4caf50;
+      border-radius: 5px;
+    }
+
+    
+
+    
+
+    .button-section button {
+      background-color: #a9b8c7;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+
+    .button-section button:hover {
+      background-color: #a9b8c7;
+    }
+
+    .add-member-container,
+    .add-attachment-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      border: none;
+    }
+
+    .add-attachment-container input[type="file"] {
+      margin-bottom: 10px;
+    }
+
+    .addchecklist {
+      cursor: pointer;
+    }
+    .right-container {
+            width: 30%;
+            padding-left: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding-top: 150px;
+            padding-left: 60px;
+        
+        }
+        .btn-go-back{
+          display: inline-block;
+          padding: 10px 15px;
+          background: gray;
+          color: white;
+          text-decoration: none;
+          border-radius: 5px;
+          font-weight: bold;
+
+        }
+        .Annuler {
+            background-color: #f4f4f4;
+            color:black;
+            padding: 6px 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            border-radius: 5px;
+           
+        }
+        .ajouter { /* l'ecriture des bouton d'option*/
+    background-color: rgba(0, 0, 0, 0.2);
+    color: black;
+    padding: 10px 15px;  /* Garde l'espacement intérieur */
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    border-radius: 5px;
+    margin-bottom: 10px;  /* Espacement entre les éléments */
+    width: 160px;  /* Largeur fixe pour chaque élément */
+    height: 38px;  /* Hauteur fixe pour chaque élément */
+    display: flex;  /* Assure que le contenu reste centré */
+    justify-content: center;  /* Centrage horizontal du texte */
+    align-items: center;  /* Centrage vertical du texte */
+}
+
+    .ajouter:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+
+        .delete-btn:hover {
+            background-color:  rgba(0, 0, 0, 0.3);
+        }
+
+       
+
+        .button-section button {
+            background-color: #a9b8c7;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .button-section button:hover {
+            background-color: #a9b8c7;
+        }
+
+      
+
+        .addchecklist {
+            cursor: pointer;
+        }
+   
+.comment-box{
+  border-radius: 5px;
+  border-color: #aaa;
+}
+.comments-container button{
+  background: gray;
+  color: white;
+  border-radius: 5px;
+  border-color: #aaa;
+}
+a{
+  text-decoration: none;
+}
+
+        
+  </style>
+</head>
+<body>
+  <div class="kanban-header">
+    <h1 id="project-name">nouhaila</h1>
+  </div>
+
+
+
+  <div id="card-container">
+    <div class="card" onclick="toggleCard(event, this)">
+      <button class="close-btn" onclick="removeCard(event, this)">X</button>
+      <h3 class="card-title">To do</h3>
+      <ul class="card-list" ondragover="allowDrop(event)" ondrop="drop(event)"></ul>
+      <div class="card-add-element">
+        <input type="text" class="card-input" placeholder="Ajouter une tâche">
+        <button class="card-add-button" onclick="addElement(event, this)">Ajouter</button>
+      </div>
+    </div>
+    <div class="card" onclick="toggleCard(event, this)">
+      <button class="close-btn" onclick="removeCard(event, this)">X</button>
+      <h3 class="card-title">Doing</h3>
+      <ul class="card-list" ondragover="allowDrop(event)" ondrop="drop(event)"></ul>
+      <div class="card-add-element">
+        <input type="text" class="card-input" placeholder="Ajouter une tâche">
+        <button class="card-add-button" onclick="addElement(event, this)">Ajouter</button>
+      </div>
+    </div>
+    <div class="card" onclick="toggleCard(event, this)">
+      <button class="close-btn" onclick="removeCard(event, this)">X</button>
+      <h3 class="card-title">Done</h3>
+      <ul class="card-list" ondragover="allowDrop(event)" ondrop="drop(event)"></ul>
+      <div class="card-add-element">
+        <input type="text" class="card-input" placeholder="Ajouter une tâche">
+        <button class="card-add-button" onclick="addElement(event, this)">Ajouter</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="add-card-container-wrapper">
+    <div class="add-card-container">
+      <input type="text" id="cardNameInput" placeholder="Nom de la carte">
+      <button id="add-card-btn" onclick="addCard()">Ajouter la carte</button>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="left-container">
+      <button class="close" onclick="closeModal()">X</button>
+      <p id="date-header" style="font-weight: bold; display: none;"></p>
+      <p><strong>Description :</strong></p>
+            <textarea id="description" class="form-control mb-2" placeholder="Ajouter une description..."></textarea>
+            <button class="btn btn-success btn-sm mb-3" onclick="enregistrerDescription()">Enregistrer</button>
+            <div id="descriptList"></div>
+
+        <div class="checklist-container" id="bodycheck">
+
+            <!-- Titre de la section Checklist avec bouton Supprimer à gauche -->
+            <div class="checklist-title">
+               
+                <p>✔Checklist</p>
+
+                <span class="delete-btn" onclick="deleteAllTasks()">Supprimer</span>
+            </div>
+                <div class="progress-bar">
+                    <div id="progressBar" class="progress-bar-inner" style="width: 0%;"></div>
+               </div>
+               </div>
+           
+            
+            <!-- Liste des éléments de la checklist -->
+            <div class="checklist" id="checklist"></div>
+            
+            <!-- Zone pour ajouter une nouvelle tâche -->
+            <div id="addTaskDiv" style="display:none;" class="add-task-container">
+                <input type="text" id="newTaskInput" placeholder="Ajouter un élément" oninput="moveTextBelowButton()"/>
+                  <!-- Barre de progression positionnée sous la checklist -->
+            
+                <span class="Annuler" onclick="cancelAdd()">Annuler</span>
+            </div>
+
+            
+            
+           <!-- Bouton pour ajouter une tâche -->
+        <button class="delete-btn"  onclick="toggleAddTask()">Ajouter </button>
+        <!-- Commentaires -->
+        <div class="comments-container">
+            <p>💬 Commentaire</p>
+            <input type="text" id="commentInput" class="comment-box" placeholder="Écrivez un commentaire...">
+            <button onclick="addComment()">Envoyer</button>
+            <div id="commentList"></div>
+        </div>
+    </div>
+
+    <!-- Partie droite : Boutons -->
+    <div class="right-container">
+        <div class="add-member-container">
+            <div class="ajouter" >➕ Rejoindre</div>
+            <a href="indexx.php"><div  class="ajouter">👥 Membres </div></a>
+            <div class="date-container">
+              <div class="ajouter" onclick="toggleDateInput()">🕓 Date limite</div>
+              <div id="date-input-container" style="display: none;">
+                  <input type="date" id="due-date">
+                  <button onclick="setDueDate()">Définir</button>
+              </div>
+             </div>
+            <div  class="ajouter" class="addchecklist" id="addcheck" >📋 checklist</div>
+            <div class="ajouter" > 📎 pièce jointe</div>
+            <div  class="ajouter" > 🔖 Étiquette</div>
+            <div class="ajouter" > 🖼️ Image de couverture</div>
+            <a href="Hauss.php"><div class="btn btn-light">↩Go Back</div></a>
+        </div>
+    </div>
+</div>
+
+  <div class="overlay" id="overlay" onclick="closeModal()"></div>
+
+  <script>
+    function addCard() {
+    let cardName = document.getElementById("cardNameInput").value.trim();
+    if (cardName) {
+        let cardContainer = document.getElementById("card-container");
+        let newCard = document.createElement("div");
+        newCard.classList.add("card");
+        newCard.innerHTML = `
+            <button class="close-btn" onclick="removeCard(event, this)">X</button>
+            <h3 class="card-title">${cardName}</h3>
+            <ul class="card-list" ondragover="allowDrop(event)" ondrop="drop(event)"></ul>
+            <div class="card-add-element">
+                <input type="text" class="card-input" placeholder="Ajouter une tâche">
+                <button class="card-add-button" onclick="addElement(event, this)">Ajouter</button>
+            </div>
+        `;
+        cardContainer.appendChild(newCard);
+        document.getElementById("cardNameInput").value = "";
+    }
+}
+
+    function addElement(event, button) {
+    let input = button.previousElementSibling;
+    let task = input.value.trim();
+    if (task) {
+        let cardList = button.closest('.card').querySelector('.card-list');
+        let listItem = document.createElement("li");
+        listItem.textContent = task;
+        listItem.draggable = true;
+        listItem.ondragstart = dragStart;
+        listItem.ondragend = dragEnd;
+        listItem.onclick = function() {
+            openModal();
+        };
+        cardList.appendChild(listItem);
+        input.value = '';
+    }
+}
+
+function dragStart(event) {
+    event.dataTransfer.setData("text/plain", event.target.textContent);
+    event.target.classList.add("dragging");
+}
+
+function dragEnd(event) {
+    event.target.classList.remove("dragging");
+}
+
+function allowDrop(event) {
+    event.preventDefault();
+    // Add this to allow dropping on the list itself
+    if (event.target.classList.contains('card-list')) {
+        event.target.style.backgroundColor = 'rgba(0,0,0,0.1)';
+    }
+}
+
+function drop(event) {
+    event.preventDefault();
+    
+    // Remove any highlighting
+    document.querySelectorAll('.card-list').forEach(list => {
+        list.style.backgroundColor = '';
+    });
+
+    const draggedText = event.dataTransfer.getData("text/plain");
+    if (!draggedText) return;
+
+    // Find the target list, handling drops on items or the list itself
+    let targetList = event.target.classList.contains('card-list') 
+        ? event.target 
+        : event.target.closest(".card-list");
+    
+    if (!targetList) return;
+
+    // Find and remove the original dragged element
+    const draggedElement = document.querySelector('.dragging');
+    if (draggedElement) {
+        draggedElement.remove();
+    }
+
+    // Create and add the new element
+    const li = document.createElement("li");
+    li.textContent = draggedText;
+    li.draggable = true;
+    li.ondragstart = dragStart;
+    li.ondragend = dragEnd;
+    li.onclick = function() {
+        openModal();
+    };
+
+    targetList.appendChild(li);
+}
+    function removeCard(event, button) {
+      event.stopPropagation();
+      let card = button.closest('.card');
+      card.remove();
+    }
+
+    function toggleCard(event, card) {
+      card.classList.toggle('expanded');
+    }
+
+    function openModal() {
+      document.getElementById('modal').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('overlay').style.display = 'block';
+      }, 0);
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
+    document.getElementById("addcheck").addEventListener("click", addchecklist);
+        document.getElementById("card").addEventListener("click", openModal);
+        document.getElementById("overlay").addEventListener("click", closeModal);
+
+        function openModal() {
+            document.getElementById("modal").style.display = "flex";
+            document.getElementById("overlay").style.display = "block";
+        }
+
+
+        function closeModal() {
+            document.getElementById("modal").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+
+        function addComment() {
+            let commentInput = document.getElementById("commentInput").value;
+            if (commentInput.trim() !== "") {
+                let commentList = document.getElementById("commentList");
+                let newComment = document.createElement("p");
+                newComment.textContent = "🟦 " + commentInput;
+                commentList.appendChild(newComment);
+                document.getElementById("commentInput").value = "";
+            }
+        }
+        function enregistrerDescription() {
+            let description = document.getElementById("description").value;
+            if (description.trim() !== "") {
+                let descriptList = document.getElementById("descriptList");
+                let newComment = document.createElement("p");
+                newComment.textContent = description;
+                descriptList.appendChild(newComment);
+                document.getElementById("description").value = "";
+            }
+        }
+
+        function updateProgress() {
+            let tasks = document.querySelectorAll(".task");
+            let completed = document.querySelectorAll(".task:checked").length;
+            let percentage = Math.round((completed / tasks.length) * 100);
+            document.getElementById("progressBar").style.width = percentage + "%";
+        }
+
+        function toggleAddTask() {
+            let taskInput = document.getElementById("newTaskInput").value.trim();
+            let addTaskDiv = document.getElementById("addTaskDiv");
+
+            if (!taskInput && addTaskDiv.style.display === "none") {
+                addTaskDiv.style.display = "block";
+            } else if (taskInput) {
+                let checklist = document.getElementById("checklist");
+                let taskLine = document.createElement("label");
+                taskLine.innerHTML = `<input type="checkbox" class="task"> ${taskInput}`;
+
+                checklist.appendChild(taskLine);
+
+                let newTaskCheckbox = taskLine.querySelector(".task");
+                newTaskCheckbox.addEventListener("change", updateProgress);
+
+                document.getElementById("newTaskInput").value = "";
+                updateProgress();
+                addTaskDiv.style.display = "none";
+            }
+        }
+
+        function cancelAdd() {
+            document.getElementById("addTaskDiv").style.display = "none";
+        }
+
+        function deleteAllTasks() {
+            let checklist = document.getElementById("checklist");
+            checklist.innerHTML = "";
+            document.getElementById("progressBar").style.width = "0%";
+        }
+
+        function addMember() {
+            alert("Ajouter un membre");
+        }
+
+        function handleFileSelect(event) {
+            let files = event.target.files;
+            let fileListContainer = document.getElementById("fileListContainer");
+          
+            let fileList = document.createElement("ul");
+
+            for (let i = 0; i < files.length; i++) {
+                let listItem = document.createElement("li");
+                let fileName = files[i].name;
+
+                if (files[i].type.startsWith("image/")) {
+                    let image = document.createElement("img");
+                    image.src = URL.createObjectURL(files[i]);
+                    image.alt = fileName;
+                    image.style.width = "100px"; // Taille de l'image
+                    listItem.appendChild(image);
+                }
+
+                let fileText = document.createElement("p");
+                fileText.textContent = fileName;
+                listItem.appendChild(fileText);
+                fileList.appendChild(listItem);
+            }
+
+            fileListContainer.appendChild(fileList);
+        } 
+        function toggleDateInput() {
+        document.getElementById('date-input-container').style.display = 'block';
+          }
+        function setDueDate() {
+      const dueDateInput = document.getElementById('due-date');
+      const dateHeader = document.getElementById('date-header');
+    if (dueDateInput.value) {
+        const formattedDate = new Date(dueDateInput.value).toLocaleDateString('fr-FR');
+        dateHeader.textContent = `Date limite: ${formattedDate}`;
+        dateHeader.style.display = 'block';
+        document.getElementById('date-input-container').style.display = 'none';
+    }
+}
+       
+  </script>
+
+</body>
+</html> 
+
+
+
+
+
+
+
+
